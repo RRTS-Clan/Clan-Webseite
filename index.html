@@ -41,19 +41,10 @@
 </head>
 <body>
 
-  <img src="logo.png" alt="RRTS Clan Logo" onclick="passwortPruefen()">
+  <a href="startseite.html">
+    <img src="logo.png" alt="RRTS Clan Logo">
+  </a>
   <p>Klicke auf das Patch für den Clan-Zugang</p>
-
-  <script>
-    function passwortPruefen() {
-      var eingabe = prompt("Bitte Clan-Passwort eingeben:");
-      if (eingabe === "RRTS2025CLAN") {
-        window.location.href = "startseite.html";
-      } else if (eingabe !== null) {
-        alert("Zugriff verweigert! Falsches Passwort.");
-      }
-    }
-  </script>
 
 </body>
 </html>
