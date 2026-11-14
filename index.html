@@ -56,7 +56,7 @@
 <body onclick="starteHintergrund()">
 
   <div class="top-controls">
-    <button class="ctrl-btn" id="langToggle" onclick="toggleLang(event)">DE / EN</button>
+    <button class="ctrl-btn" id="langToggle" onclick="toggleLang(event)">DE</button>
     <button class="ctrl-btn" id="soundToggle" onclick="toggleSound(event)">🔊 Sound: An</button>
   </div>
 
@@ -71,27 +71,31 @@
     const bgMusic = document.getElementById("bgMusic");
     bgMusic.volume = 0.25;
     let soundAktiv = localStorage.getItem("rrtsSound") !== "aus";
+    const sprachen = ["de", "en", "fr", "zh"];
     let lang = localStorage.getItem("rrtsLang") || "de";
+    if (!sprachen.includes(lang)) lang = "de";
+
+    const texte = {
+      de: { patch: "Klicke auf das Patch für den Clan-Zugang", btn: "🇩🇪 DE", an: "🔊 Sound: An", aus: "🔇 Sound: Aus" },
+      en: { patch: "Click the patch for clan access", btn: "🇬🇧 EN", an: "🔊 Sound: On", aus: "🔇 Sound: Off" },
+      fr: { patch: "Cliquez sur l'écusson pour accéder au clan", btn: "🇫🇷 FR", an: "🔊 Son : Activé", aus: "🔇 Son : Coupé" },
+      zh: { patch: "点击臂章进入战队", btn: "🇨🇳 中文", an: "🔊 音效：开", aus: "🔇 音效：关" }
+    };
 
     function applyLang() {
-      document.getElementById("patchText").innerText = lang === "en"
-        ? "Click the patch for clan access"
-        : "Klicke auf das Patch für den Clan-Zugang";
-      document.getElementById("langToggle").innerText = lang === "en" ? "🇬🇧 EN" : "🇩🇪 DE";
+      document.getElementById("patchText").innerText = texte[lang].patch;
+      document.getElementById("langToggle").innerText = texte[lang].btn;
       updateSoundBtn();
     }
 
     function updateSoundBtn() {
-      if (lang === "en") {
-        document.getElementById("soundToggle").innerText = soundAktiv ? "🔊 Sound: On" : "🔇 Sound: Off";
-      } else {
-        document.getElementById("soundToggle").innerText = soundAktiv ? "🔊 Sound: An" : "🔇 Sound: Aus";
-      }
+      document.getElementById("soundToggle").innerText = soundAktiv ? texte[lang].an : texte[lang].aus;
     }
 
     function toggleLang(e) {
       e.stopPropagation();
-      lang = lang === "de" ? "en" : "de";
+      const nextIdx = (sprachen.indexOf(lang) + 1) % sprachen.length;
+      lang = sprachen[nextIdx];
       localStorage.setItem("rrtsLang", lang);
       applyLang();
     }
@@ -112,11 +116,12 @@
     function klickMitSound(e, soundDatei, zielSeite) {
       e.preventDefault();
       e.stopPropagation();
+      sessionStorage.setItem("rrtsMusicTime", bgMusic.currentTime);
       if (soundAktiv) {
         const sfx = new Audio(soundDatei);
-        sfx.volume = 0.9;
+        sfx.volume = 1.0;
         sfx.play().catch(() => {});
-        setTimeout(() => { window.location.href = zielSeite; }, 500);
+        setTimeout(() => { window.location.href = zielSeite; }, 900);
       } else {
         window.location.href = zielSeite;
       }
